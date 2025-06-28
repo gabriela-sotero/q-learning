@@ -1,0 +1,28 @@
+# q-learning
+
+# macOS
+.DS_Store
+._*
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.env
+venv/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.temp
+
+# Keep executable zips
+!execs/**/*.zip
