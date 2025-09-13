@@ -1,38 +1,33 @@
-import threading
-import time
 import socket
+import ast
 
-
-#Cria a conexao TCP
 def connect(port):
     try:
-        s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        s.connect(('127.0.0.1',port))
-        print('conexao TCP estabelecida')
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('127.0.0.1', port))
+        print('Connection established.')
         return s
     except:
-        print('falhou em fazer o a conexao TCP como cliente')
+        print('Connection failed.')
         return 0
-        #self.terminate()
-    else:
-        print('continuando')
 
+def get_state_reward(sock, action):
+    sock.send(str(action).encode())
+    data_received = False
 
-#Da o estado e a recompensa que o agente recebeu
-def get_state_reward(s , act):
-    s.send(str(act).encode())
-    data = "" 
-    data_recv = False;
-    while(not data_recv):
-        data = s.recv(1024).decode()
+    while not data_received:
+        raw = sock.recv(1024).decode().strip()
+
         try:
-            data = eval(data)
-            data_recv = True
+            data = ast.literal_eval(raw)
+                        # 🩹 Corrige campos em português, se necessário
+            if 'estado' in data:
+                data['state'] = data.pop('estado')
+            if 'recompensa' in data:
+                data['reward'] = data.pop('recompensa')
+            data_received = True
         except:
-            data_recv = False
+            data_received = False
+            
+    return data['state'], data['reward']
 
-    #convert the data to decimal int
-    estado = data['estado']
-    recompensa = data['recompensa']
-
-    return estado, recompensa
